@@ -1,6 +1,8 @@
 package com.enzulode.configuration;
 
 import com.enzulode.exception.HibernateConfigurationFailedException;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.BootstrapServiceRegistry;
@@ -16,6 +18,8 @@ import java.util.Map;
  * Default hibernate configurer implementation.
  *
  */
+@Named("hibernateConfigurer")
+@ApplicationScoped
 public class DefaultHibernateConfigurerImpl implements HibernateConfigurer
 {
 	/**
