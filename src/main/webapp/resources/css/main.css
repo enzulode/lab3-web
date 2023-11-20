@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+/* GENERAL STYLES */
+
+body {
+	margin: 0;
+	padding: 0;
+}
+
+.general-container {
+	display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-50%);
+
+	margin: 50px;
+}
+
+/* FORM styles */
+
+.form-container {
+	height: 400px;
+	width: 300px;
+
+	justify-content: center;
+	align-items: center;
+	display: flex;
+}
+
+#error-message {
+	display: block;
+	height: 40px;
+}
+
+.error {
+	color: red;
+}
+
+.r-control {
+	margin: 3px;
+}
+
+/* CANVAS styles */
+.canvas-container {
+	justify-content: center;
+	align-items: center;
+	display: flex;
+
+	height: 300px;
+	width: 400px;
+}
+
+/* RESULTS-TABLE styles */
+
+.results-container {
+	padding: 50px;
+	display: block;
+	height: 200px;
+	width: 400px;
+}
+
+.table-wrapper {
+	justify-content: center;
+	/*align-items: center;*/
+	display: flex;
+
+	height: 200px;
+	width: 400px;
+	overflow: auto;
+}
+
+.table-wrapper::-webkit-scrollbar {
+	display: none;
+}
