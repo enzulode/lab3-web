@@ -4,6 +4,8 @@ import com.enzulode.model.Point;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.hibernate.Session;
 
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.List;
  */
 @Named("pointDAO")
 @SessionScoped
+@NoArgsConstructor
+@AllArgsConstructor
 public class PointDAOImpl implements Dao<Point>
 {
 
