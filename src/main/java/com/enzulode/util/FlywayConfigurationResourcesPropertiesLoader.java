@@ -10,12 +10,23 @@ import org.flywaydb.core.api.configuration.Configuration;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * Flyway-configuration-based implementation of properties loader.
+ *
+ */
 @Named("databaseConfigurationLoader")
 @ApplicationScoped
 @Slf4j
 public class FlywayConfigurationResourcesPropertiesLoader implements PropertiesLoader<Configuration>
 {
 
+	/**
+	 * This method performs properties loading.
+	 *
+	 * @param name properties file name
+	 * @return a generic configuration instance
+	 * @throws FailedToLoadConfigurationResourceException if properties file was not found
+	 */
 	@Override
 	public Configuration load(String name) throws FailedToLoadConfigurationResourceException
 	{
