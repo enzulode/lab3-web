@@ -15,7 +15,6 @@ java {
 repositories {
 	mavenCentral()
 }
-
 dependencies {
 
 //	----------------------------------------------------------------------------
@@ -28,13 +27,15 @@ dependencies {
 
 //	Jakarta EE deps
 	implementation 'jakarta.platform:jakarta.jakartaee-web-api:10.0.0'
+	implementation 'jakarta.faces:jakarta.faces-api:4.0.1'
+	implementation 'org.glassfish:jakarta.faces:4.0.1'
 
 //	Lombok deps
 	compileOnly 'org.projectlombok:lombok:1.18.30'
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
 
 //	Primefaces deps
-	implementation 'org.primefaces:primefaces:13.0.2:jakarta'
+	implementation 'org.primefaces:primefaces:13.0.3:jakarta'
 
 //	Database driver
 	implementation 'org.postgresql:postgresql:42.6.0'
@@ -50,6 +51,9 @@ dependencies {
 
 //	Logback deps
 	implementation 'ch.qos.logback:logback-classic:1.4.11'
+
+//	Gson deps
+	implementation 'com.google.code.gson:gson:2.10.1'
 
 //	----------------------------------------------------------------------------
 //	----------------------------------------------------------------------------
@@ -70,6 +74,7 @@ dependencies {
 //	Testcontainers deps
 	testImplementation 'org.testcontainers:postgresql:1.19.1'
 }
+
 
 tasks.named('test', Test) {
 	useJUnitPlatform()
