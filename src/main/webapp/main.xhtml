@@ -96,6 +96,7 @@
 
 					<p:commandButton id="submit" value="Check" action="#{formController.submitForm(formData)}" ajax="true" update="table @form drawPointsPanel"/>
 					<p:commandButton id="clear" value="Clear" action="#{formController.clearResults()}" ajax="true" update="table @form drawPointsPanel" onclick="canvas.currentR = 0; canvas.drawEmptyArea()"/>
+					<h:commandButton action="index" value="Back"/>
 				</h:form>
 			</div>
 
