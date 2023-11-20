@@ -1,0 +1,32 @@
+<html xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui"
+>
+
+	<h:head>
+	    <title>Welcome page</title>
+		<h:outputStylesheet library="css" name="libs/bootstrap.css"/>
+		<h:outputStylesheet library="css" name="index.css"/>
+	</h:head>
+
+	<h:body>
+		<nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+			<div class="container-fluid">
+		        <a class="navbar-brand" href="#">Andreev Vladislav P3219 LR2 - 29785</a>
+			</div>
+		</nav>
+
+		<p id="clock" class="clock">
+			<!--    CLOCK   -->
+		</p>
+
+		<h:form>
+			<h:commandButton action="main" value="Main page"/>
+		</h:form>
+	</h:body>
+
+	<h:outputScript library="js" name="libs/jquery.js"/>
+	<h:outputScript library="js" name="libs/bootstrap_bundle.js"/>
+	<h:outputScript library="js" name="index.js"/>
+</html>
