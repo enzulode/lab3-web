@@ -1,0 +1,148 @@
+<html xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:a="jakarta.faces.passthrough"
+      xmlns:ui="jakarta.faces.facelets"
+      xmlns:p="http://primefaces.org/ui"
+>
+
+	<h:head>
+	    <title>Main page</title>
+		<h:outputStylesheet library="css" name="libs/bootstrap.css"/>
+		<h:outputStylesheet library="css" name="main.css"/>
+	</h:head>
+
+	<h:body>
+		<div class="general-container">
+			<!--    FORM    -->
+			<div class="container form-container">
+				<h:form id="form">
+					<div class="x-input-container">
+						<span>X:</span>
+						<h:outputText id="x" name="x" value="#{formData.x}" />
+
+						<div class="button-group">
+							<h:commandButton value="-5" type="button">
+								<f:ajax render="x" listener="#{formData.setX(-5)}"/>
+							</h:commandButton>
+
+							<h:commandButton value="-4" type="button">
+								<f:ajax render="x" listener="#{formData.setX(-4)}"/>
+							</h:commandButton>
+
+							<h:commandButton value="-3" type="button">
+								<f:ajax render="x" listener="#{formData.setX(-3)}"/>
+							</h:commandButton>
+
+							<h:commandButton value="-2" type="button">
+								<f:ajax render="x" listener="#{formData.setX(-2)}"/>
+							</h:commandButton>
+
+							<h:commandButton value="-1" type="button">
+								<f:ajax render="x" listener="#{formData.setX(-1)}"/>
+							</h:commandButton>
+
+							<h:commandButton value="0" type="button">
+								<f:ajax render="x" listener="#{formData.setX(0)}"/>
+							</h:commandButton>
+
+							<h:commandButton value="1" type="button">
+								<f:ajax render="x" listener="#{formData.setX(1)}"/>
+							</h:commandButton>
+
+							<h:commandButton value="2" type="button">
+								<f:ajax render="x" listener="#{formData.setX(2)}"/>
+							</h:commandButton>
+
+							<h:commandButton value="3" type="button">
+								<f:ajax render="x" listener="#{formData.setX(3)}"/>
+							</h:commandButton>
+						</div>
+					</div>
+
+					<div class="y-input-container">
+						<label for="y-selection">
+							<span>Y: </span>
+							<h:inputText id="y-selection" styleClass="form-control" a:placeholder="Enter Y(-5, 3):" converterId="jakarta.faces.Double" value="#{formData.y}">
+								<f:validator validatorId="com.enzulode.ui.validation.YPropertyValidator"/>
+							</h:inputText>
+							<h:message for="y-selection" style="color:red"/>
+						</label>
+					</div>
+
+					<div class="r-input-container">
+						<span>R: </span>
+						<h:outputText id="r" name="r" value="#{formData.r}" /><br/>
+
+						<p:commandLink value="1" type="button" onclick="canvas.redrawArea(1, true)" ajax="true" update="table @form drawPointsPanel">
+							<f:ajax render="r" listener="#{formData.setR(1)}"/>
+						</p:commandLink><br/>
+
+						<p:commandLink value="1.5" type="button" onclick="canvas.redrawArea(1.5, true)" ajax="true" update="table @form drawPointsPanel">
+							<f:ajax render="r" listener="#{formData.setR(1.5)}"/>
+						</p:commandLink><br/>
+
+						<p:commandLink value="2" type="button" onclick="canvas.redrawArea(2, true)" ajax="true" update="table @form drawPointsPanel">
+							<f:ajax render="r" listener="#{formData.setR(2)}"/>
+						</p:commandLink><br/>
+
+						<p:commandLink value="2.5" type="button" onclick="canvas.redrawArea(2.5, true)" ajax="true" update="table @form drawPointsPanel">
+							<f:ajax render="r" listener="#{formData.setR(2.5)}"/>
+						</p:commandLink><br/>
+
+						<p:commandLink value="3" type="button" onclick="canvas.redrawArea(3, true)" ajax="true" update="table @form drawPointsPanel">
+							<f:ajax render="r" listener="#{formData.setR(3)}"/>
+						</p:commandLink><br/>
+					</div>
+
+					<p:commandButton id="submit" value="Check" action="#{formController.submitForm(formData)}" ajax="true" update="table @form drawPointsPanel"/>
+					<p:commandButton id="clear" value="Clear" action="#{formController.clearResults()}" ajax="true" update="table @form drawPointsPanel" onclick="canvas.currentR = 0; canvas.drawEmptyArea()"/>
+				</h:form>
+			</div>
+
+			<!--    CANVAS    -->
+			<div class="canvas-container">
+				<canvas id="area" width="300px" height="300px"/>
+				<p id="error-message" class="error"></p>
+			</div>
+
+			<!--    RESULTS    -->
+			<p:dataTable id="table" value="#{pointDataModel}" var="point" paginator="true"
+			             paginatorTemplate="{CurrentPageReport} {PreviousPageLink} {PageLinks} {NextPageLink}"
+			             rows="5" lazy="true" paginatorPosition="bottom" paginatorAlwaysVisible="true" styleClass="table"
+			>
+				<p:column headerText="X">
+					<h:outputText value="#{point.x}"/>
+				</p:column>
+
+				<p:column headerText="Y">
+					<h:outputText value="#{point.y}">
+						<f:convertNumber type="number" maxFractionDigits="4" groupingUsed="false"/>
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="R">
+					<h:outputText value="#{point.r}"/>
+				</p:column>
+
+				<p:column headerText="Result">
+					<h:outputText value="#{point.result ? 'succeed' : 'missed'}"/>
+				</p:column>
+			</p:dataTable>
+		</div>
+
+		<h:outputScript library="js" name="libs/jquery.js"/>
+		<h:outputScript library="js" name="libs/bootstrap_bundle.js"/>
+
+		<h:outputScript library="js" name="utils/Canvas.js"/>
+		<h:outputScript library="js" name="utils/Utils.js"/>
+		<h:outputScript library="js" name="main.js"/>
+	</h:body>
+
+	<h:panelGroup id="drawPointsPanel">
+		<h:outputScript>
+			canvas.applyPoints(JSON.parse('#{graphController.fetchPoints()}'))
+		</h:outputScript>
+	</h:panelGroup>
+
+	<p:remoteCommand name="addPoint" action="#{graphController.handleGraphClick()}" update="table drawPointsPanel" process="@this"/>
+</html>
