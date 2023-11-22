@@ -40,6 +40,9 @@ public class PointFormControllerImpl implements FormController
 	 */
 	public void submitForm(FormData formData)
 	{
+		if (formData.getR() == 0)
+			return;
+
 		Point point = new Point(formData.getX(), formData.getY(), formData.getR());
 		point.setResult(
 				hitCheckingService.checkHit(point.getPointData())
