@@ -51,8 +51,11 @@ public class PointFormControllerImpl implements FormController
 	 * This method is responsible for previous results clearing.
 	 *
 	 */
-	public void clearResults()
+	public void clearResults(FormData formData)
 	{
+		formData.setX(0);
+		formData.setY(0);
+		formData.setR(0);
 		pointDAO.clear();
 	}
 
