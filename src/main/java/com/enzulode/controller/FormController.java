@@ -22,5 +22,5 @@ public interface FormController extends Serializable
 	 * This method is responsible for previous results clearing.
 	 *
 	 */
-	void clearResults();
+	void clearResults(FormData formData);
 }
