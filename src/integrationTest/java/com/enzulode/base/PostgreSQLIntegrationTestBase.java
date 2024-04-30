@@ -3,6 +3,7 @@ package com.enzulode.base;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 
 /**
  * This class contains basic logic for Postgresql-related testing.
@@ -14,6 +15,7 @@ public abstract class PostgreSQLIntegrationTestBase
 	/**
 	 * PostgreSQL container instance.
 	 */
+	@Container
 	public static PostgreSQLContainer<?> CONTAINER = new PostgreSQLContainer<>("postgres:15.2");
 
 

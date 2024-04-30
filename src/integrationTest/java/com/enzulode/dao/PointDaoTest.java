@@ -1,8 +1,6 @@
-package com.enzulode.integration.dao;
+package com.enzulode.dao;
 
 import com.enzulode.base.HibernatePostgreSQLIntegrationTestBase;
-import com.enzulode.dao.Dao;
-import com.enzulode.dao.PointDAOImpl;
 import com.enzulode.model.Point;
 import org.hibernate.Session;
 import org.junit.jupiter.api.*;
@@ -12,9 +10,8 @@ import java.util.Comparator;
 import java.util.List;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class PointDaoIntegrationTest extends HibernatePostgreSQLIntegrationTestBase
+public class PointDaoTest extends HibernatePostgreSQLIntegrationTestBase
 {
-
 	/**
 	 * Hibernate session instance.
 	 *

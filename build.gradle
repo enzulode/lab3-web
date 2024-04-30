@@ -8,78 +8,87 @@ group = 'com.enzulode'
 version = '1.0.0'
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
 }
 
 repositories {
 	mavenCentral()
 }
+
+sourceSets {
+	integrationTest {
+		java {
+			compileClasspath += main.compileClasspath + main.output
+			runtimeClasspath += main.runtimeClasspath + main.output
+		}
+	}
+}
+
+configurations {
+	integrationTestCompileOnly
+	integrationTestRuntimeOnly
+	integrationTestImplementation
+	integrationTestAnnotationProcessor
+}
+
 dependencies {
-
-//	----------------------------------------------------------------------------
-//	----------------------------------------------------------------------------
-
-//								General deps
-
-//	----------------------------------------------------------------------------
-//	----------------------------------------------------------------------------
-
-//	Jakarta EE deps
+	// general dependencies
+	// Jakarta EE deps
 	implementation 'jakarta.platform:jakarta.jakartaee-web-api:10.0.0'
 	implementation 'jakarta.faces:jakarta.faces-api:4.0.1'
 	implementation 'org.glassfish:jakarta.faces:4.0.1'
 
-//	Lombok deps
+	// Lombok deps
 	compileOnly 'org.projectlombok:lombok:1.18.30'
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
 
-//	Primefaces deps
+	// Primefaces deps
 	implementation 'org.primefaces:primefaces:13.0.3:jakarta'
 
-//	Database driver
-	implementation 'org.postgresql:postgresql:42.6.0'
+	// Database driver
+	implementation 'org.postgresql:postgresql:42.7.3'
 
-//	Hibernate PLATFORM + hibernate-related deps
+	// Hibernate PLATFORM + hibernate-related deps
 	implementation platform('org.hibernate.orm:hibernate-platform:6.3.1.Final')
 	implementation 'org.hibernate.orm:hibernate-core'
 	implementation 'jakarta.transaction:jakarta.transaction-api'
 
-//	Migrations engine
+	// Migrations engine
 	implementation 'org.flywaydb:flyway-core:10.0.0'
 	implementation 'org.flywaydb:flyway-database-postgresql:10.0.0'
 
-//	Logback deps
-	implementation 'ch.qos.logback:logback-classic:1.4.11'
+    // Logback deps
+	implementation 'ch.qos.logback:logback-classic:1.5.6'
 
-//	Gson deps
+	// Gson deps
 	implementation 'com.google.code.gson:gson:2.10.1'
 
-//	----------------------------------------------------------------------------
-//	----------------------------------------------------------------------------
-
-//								Testing deps
-
-//	----------------------------------------------------------------------------
-//	----------------------------------------------------------------------------
-
-//	Lombok testing deps
-	testCompileOnly 'org.projectlombok:lombok:1.18.30'
-	testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
-
-//	JUnit 5 deps
-	testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
-	testImplementation 'org.junit.platform:junit-platform-launcher'
-
-//	Testcontainers deps
-	testImplementation 'org.testcontainers:postgresql:1.19.1'
+	// configure integration tests dependencies
+	integrationTestImplementation 'org.testcontainers:testcontainers:1.19.7'
+	integrationTestImplementation 'org.testcontainers:postgresql:1.19.7'
+	integrationTestImplementation 'org.testcontainers:junit-jupiter:1.19.7'
+	integrationTestImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.2'
+	integrationTestImplementation 'org.junit.jupiter:junit-jupiter-engine:5.10.2'
+	integrationTestRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	integrationTestRuntimeOnly 'ch.qos.logback:logback-classic:1.5.6'
 }
 
+tasks.named('war', War) {
+	archiveFileName = rootProject.name + '.war'
+}
 
-tasks.named('test', Test) {
+tasks.register('integrationTest', Test) {
+	description = 'Runs the integration test suite.'
+	group = 'verification'
+	testClassesDirs = sourceSets.integrationTest.output.classesDirs
+	classpath = sourceSets.integrationTest.runtimeClasspath
 	useJUnitPlatform()
 }
 
-war {
-	archiveFileName = rootProject.name + '.war'
+check.dependsOn(integrationTest)
+
+tasks.named('test', Test) {
+	useJUnitPlatform()
 }
