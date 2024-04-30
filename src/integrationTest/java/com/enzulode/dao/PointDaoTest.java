@@ -2,14 +2,14 @@ package com.enzulode.dao;
 
 import com.enzulode.base.HibernatePostgreSQLIntegrationTestBase;
 import com.enzulode.model.Point;
+import jakarta.transaction.Transactional;
 import org.hibernate.Session;
 import org.junit.jupiter.api.*;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class PointDaoTest extends HibernatePostgreSQLIntegrationTestBase
 {
 	/**
@@ -33,6 +33,7 @@ public class PointDaoTest extends HibernatePostgreSQLIntegrationTestBase
 	{
 		hibernateSession = sessionFactory.openSession();
 		pointDao = new PointDAOImpl(hibernateSession);
+		pointDao.clear();
 	}
 
 	/**
@@ -51,40 +52,33 @@ public class PointDaoTest extends HibernatePostgreSQLIntegrationTestBase
 	 *
 	 */
 	@Test
-	@Order(1)
+	@Transactional
 	@DisplayName("Point creation")
-	public void testPointCreation()
+	public void trySaveSomePoints_then_savingPerformedCorrectly()
 	{
+		// testing data to be saved
 		List<Point> points = List.of(
 				new Point(1, 2, 3),
 				new Point(2, 4 ,2),
-				new Point(0, 2, 1)
+				new Point(0, 2, 1),
+				new Point(2, 2, 2),
+				new Point(2, 4 ,3),
+				new Point(1, 2, 1)
 		);
 
-		for (Point p : points)
-			p.setResult(true);
+		// assume, that point hits the desired area
+		points.forEach(p -> p.setResult(true));
 
-		List<Point> result = new ArrayList<>();
-		for (Point p : points)
-			result.add(pointDao.add(p));
+		// point saving result
+		List<Point> savingResult = points.stream()
+		                                 .map(pointDao::add)
+		                                 .toList();
 
-		for (Point p : result)
-		{
-			Assertions.assertNotNull(p, "Point was not inserted");
-			Assertions.assertNotNull(p.getId(), "Point was not inserted");
-		}
-	}
-
-	/**
-	 * This method tests point counting via DAO.
-	 *
-	 */
-	@Test
-	@Order(2)
-	@DisplayName("Point count test")
-	public void testPointCount()
-	{
-		Assertions.assertEquals(3, pointDao.count(), "Unexpected amount of points found");
+		Assertions.assertEquals(points.size(), pointDao.count(), "Expected another amount of points stored in the database: means that database was not clear or not every point was inserted");
+		savingResult.forEach(p -> {
+			Assertions.assertNotNull(p, "Point is null: means that point was not inserted.");
+			Assertions.assertNotNull(p.getId(), "Point id is null: means that point was not inserted.");
+		});
 	}
 
 	/**
@@ -92,13 +86,36 @@ public class PointDaoTest extends HibernatePostgreSQLIntegrationTestBase
 	 *
 	 */
 	@Test
-	@Order(3)
+	@Transactional
 	@DisplayName("Point clear test")
-	public void testPointClear()
+	public void tryClearDatabase_then_storedPointsAmountIsZero()
 	{
-		pointDao.clear();
+		// testing data to be saved
+		List<Point> points = List.of(
+				new Point(1, 2, 3),
+				new Point(2, 4 ,2),
+				new Point(0, 2, 1),
+				new Point(2, 2, 2),
+				new Point(2, 4 ,3),
+				new Point(1, 2, 1)
+		);
 
-		Assertions.assertEquals(0, pointDao.count(), "Unexpected amount of points found");
+		// assume, that point hits the desired area
+		points.forEach(p -> p.setResult(true));
+
+		// point saving result
+		List<Point> savingResult = points.stream()
+		                                 .map(pointDao::add)
+		                                 .toList();
+
+		Assertions.assertEquals(points.size(), pointDao.count(), "Expected another amount of points stored in the database: means that database was not clear or not every point was inserted");
+		savingResult.forEach(p -> {
+			Assertions.assertNotNull(p, "Point is null: means that point was not inserted.");
+			Assertions.assertNotNull(p.getId(), "Point id is null: means that point was not inserted.");
+		});
+
+		pointDao.clear();
+		Assertions.assertEquals(0, pointDao.count(), "Database is not empty: means that clear() method is not working");
 	}
 
 	/**
@@ -106,25 +123,41 @@ public class PointDaoTest extends HibernatePostgreSQLIntegrationTestBase
 	 *
 	 */
 	@Test
-	@Order(4)
+	@Transactional
 	@DisplayName("Point fetching test")
-	public void testFindAll()
+	public void tryFindAll_then_insertedAndFoundElementListsAreEqual()
 	{
+		// testing data to be saved
 		List<Point> points = List.of(
 				new Point(1, 2, 3),
-				new Point(2, 4 ,2.5),
-				new Point(0, 2, 3)
+				new Point(2, 4 ,2),
+				new Point(0, 2, 1),
+				new Point(2, 2, 2),
+				new Point(2, 4 ,3),
+				new Point(1, 2, 1)
 		);
 
-		List<Point> inserted = new ArrayList<>();
-		for (Point p : points)
-			inserted.add(pointDao.add(p));
+		// assume, that point hits the desired area
+		points.forEach(p -> p.setResult(true));
 
-		List<Point> result = pointDao.findAll();
+		// point saving result
+		List<Point> savingResult = points.stream()
+		                                 .map(pointDao::add)
+		                                 .collect(Collectors.toList());
 
-		result.sort(Comparator.comparingLong(Point::getId));
-		inserted.sort(Comparator.comparingLong(Point::getId));
+		Assertions.assertEquals(points.size(), pointDao.count(), "Expected another amount of points stored in the database: means that database was not clear or not every point was inserted");
+		savingResult.forEach(p -> {
+			Assertions.assertNotNull(p, "Point is null: means that point was not inserted.");
+			Assertions.assertNotNull(p.getId(), "Point id is null: means that point was not inserted.");
+		});
 
-		Assertions.assertEquals(inserted, result, "Unexpected resulting list");
+		// find all the points stored in the database
+		List<Point> findAllResult = pointDao.findAll();
+
+		// found & inserted points lists should have the same order
+		findAllResult.sort(Comparator.comparingLong(Point::getId));
+		savingResult.sort(Comparator.comparingLong(Point::getId));
+
+		Assertions.assertEquals(savingResult, findAllResult, "Saving result differs from the findAll result: means that findAll() operation or testing data insertion failed");
 	}
 }
